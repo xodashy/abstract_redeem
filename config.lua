@@ -8,5 +8,3 @@ Config.StarterPack = {
     {item = "bread", count = 10},
     {item = "water", count = 10},
 } 
-
-Config.Command = 'redeem'

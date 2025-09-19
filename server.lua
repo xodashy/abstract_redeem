@@ -1,19 +1,18 @@
 if GetResourceState('es_extended') ~= 'started' then return end
 
 local ESX = exports['es_extended']:getSharedObject()
-local Config = lib.require('config')
 
 function hasRedeemed(identifier, cb)
-    MySQL.scalar('SELECT 1 FROM female_starter WHERE identifier = ?', {identifier}, function(result)
+    exports.oxmysql:scalar('SELECT 1 FROM female_starter WHERE identifier = ?', {identifier}, function(result)
         cb(result ~= nil)
     end)
 end
 
 function markRedeemed(identifier)
-    MySQL.execute('INSERT INTO female_starter (identifier) VALUES (?)', {identifier})
+    exports.oxmysql:execute('INSERT INTO female_starter (identifier) VALUES (?)', {identifier})
 end
 
-RegisterCommand(Config.Command, function(source)
+RegisterCommand('femaleredeem', function(source)
     local xPlayer = ESX.GetPlayerFromId(source)
     if not xPlayer then return end
 
@@ -28,6 +27,7 @@ RegisterCommand(Config.Command, function(source)
     if not discordId then
         TriggerClientEvent('ox_lib:notify', source, {
             type = 'inform',
+            position = 'center-right',
             description = 'Discord not linked. You need the female role to redeem.'
         })
         return
@@ -38,14 +38,24 @@ RegisterCommand(Config.Command, function(source)
             if code ~= 200 or not data then
                 TriggerClientEvent('ox_lib:notify', source, {
                     type = 'error',
+                    position = 'center-right',
                     description = 'Error checking Discord. Try again later.'
                 })
                 return
             end
-            local member = json.decode(data)
+            local success, member = pcall(json.decode, data)
+            if not success then
+                TriggerClientEvent('ox_lib:notify', source, {
+                    type = 'error',
+                    position = 'center-right',
+                    description = 'Error parsing Discord response. Try again later.'
+                })
+                return
+            end
+            
             local hasRole = false
             for _, role in pairs(member.roles or {}) do
-                if role == Config.FemaleRoleID then
+                if tostring(role) == tostring(Config.FemaleRoleID) then
                     hasRole = true
                     break
                 end
@@ -53,6 +63,7 @@ RegisterCommand(Config.Command, function(source)
             if not hasRole then
                 TriggerClientEvent('ox_lib:notify', source, {
                     type = 'error',
+                    position = 'center-right',
                     description = 'You don\'t have the required Discord role.'
                 })
                 return
@@ -61,6 +72,7 @@ RegisterCommand(Config.Command, function(source)
                 if redeemed then
                     TriggerClientEvent('ox_lib:notify', source, {
                         type = 'inform',
+                        position = 'center-right',
                         description = 'You already claimed your starter pack.'
                     })
                     return
@@ -71,6 +83,7 @@ RegisterCommand(Config.Command, function(source)
                 markRedeemed(identifier)
                 TriggerClientEvent('ox_lib:notify', source, {
                     type = 'success',
+                    position = 'center-right',
                     description = 'You got your female starter pack!'
                 })
             end)
