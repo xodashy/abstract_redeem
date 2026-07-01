@@ -23,23 +23,24 @@ A simple FiveM ESX server script that allows users with a specific Discord role 
        identifier VARCHAR(50) NOT NULL PRIMARY KEY
    );
    ```
-3. Add `ensure abstract_redeem` to your `server.cfg` after `es_extended` and `oxmysql`.
+3. Add the convars below and `ensure abstract_redeem` to your `server.cfg` after `es_extended` and `oxmysql`.
 
 ## Configuration
-Edit `config.lua`:
+Add these to `server.cfg` (use `set`, not `setr`, so the bot token stays server-side only):
+```
+set abstract_redeem:discord_bot_token "YOUR_DISCORD_BOT_TOKEN_HERE"
+set abstract_redeem:discord_guild_id "YOUR_DISCORD_SERVER_ID_HERE"
+set abstract_redeem:female_role_id "YOUR_DISCORD_ROLE_ID_HERE"
+```
 ```lua
-Config.DiscordBotToken = "YOUR_DISCORD_BOT_TOKEN_HERE"
-Config.DiscordGuildID = "YOUR_DISCORD_SERVER_ID_HERE"
-Config.FemaleRoleID = "YOUR_DISCORD_ROLE_ID_HERE"
-
 Config.StarterPack = {
     {item = "bread", count = 10},
     {item = "water", count = 10},
 }
 ```
-- **DiscordBotToken**: Your Discord bot's token
-- **DiscordGuildID**: Your Discord server's ID
-- **FemaleRoleID**: The Discord role ID required to redeem
+- **abstract_redeem:discord_bot_token**: Your Discord bot's token
+- **abstract_redeem:discord_guild_id**: Your Discord server's ID
+- **abstract_redeem:female_role_id**: The Discord role ID required to redeem
 - **StarterPack**: List of items and amounts to give
 
 ## Usage

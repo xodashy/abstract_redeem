@@ -1,8 +1,8 @@
 Config = {}
 
-Config.DiscordBotToken = "YOUR_DISCORD_BOT_TOKEN_HERE"
-Config.DiscordGuildID = "YOUR_DISCORD_SERVER_ID_HERE"
-Config.FemaleRoleID = "YOUR_DISCORD_ROLE_ID_HERE"
+Config.DiscordBotToken = GetConvar('abstract_redeem:discord_bot_token', '')
+Config.DiscordGuildID = GetConvar('abstract_redeem:discord_guild_id', '')
+Config.FemaleRoleID = GetConvar('abstract_redeem:female_role_id', '')
 
 Config.StarterPack = {
     {item = "bread", count = 10},
